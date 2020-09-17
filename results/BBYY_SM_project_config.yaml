@@ -1,0 +1,86 @@
+project_name: BBYY_SM
+scripts_path: /afs/cern.ch/work/c/chlcheng/Repository/hpogrid/examples/scripts/BBYY/
+model_config:
+  script: train_bdt.py
+  model: yybb_bdt
+  param:
+    channel: SM
+    num_round: 10000
+search_space:
+  min_child_weight:
+    method: uniformint
+    dimension:
+      low: 0
+      high: 100
+  colsample_bytree:
+    method: uniform
+    dimension:
+      low: 0.3
+      high: 1
+  scale_pos_weight:
+    method: uniform
+    dimension:
+      low: 0
+      high: 9
+  max_delta_step:
+    method: uniform
+    dimension:
+      low: 0
+      high: 20
+  subsample:
+    method: uniform
+    dimension:
+      low: 0.5
+      high: 1
+  eta:
+    method: uniform
+    dimension:
+      low: 0.01
+      high: 0.05
+  alpha:
+    method: uniform
+    dimension:
+      low: 0
+      high: 1
+  lambda:
+    method: uniform
+    dimension:
+      low: 0
+      high: 10
+  max_depth:
+    method: uniformint
+    dimension:
+      low: 3
+      high: 20
+  gamma:
+    method: uniform
+    dimension:
+      low: 0
+      high: 10
+  max_bin:
+    method: uniformint
+    dimension:
+      low: 10
+      high: 500
+hpo_config:
+  algorithm: nevergrad
+  metric: auc
+  mode: max
+  scheduler: asynchyperband
+  num_trials: 1000
+  max_concurrent: 3
+  log_dir: ./log
+  verbose: 0
+  stop:
+    training_iteration: 1
+  resource: null
+  scheduler_param: {}
+  algorithm_param:
+    method: DoubleFastGADiscreteOnePlusOne
+grid_config:
+  site: ANALY_MANC_GPU_TEST,ANALY_MWT2_GPU,ANALY_BNL_GPU_ARC
+  container: /cvmfs/unpacked.cern.ch/gitlab-registry.cern.ch/aml/hyperparameter-optimization/alkaid-qt/hpogrid:latest
+  inDS: user.chlcheng:user.chlcheng.hpo.bbyy.dataset.01
+  outDS: user.${{RUCIO_ACCOUNT}}.hpogrid.{HPO_PROJECT_NAME}.out.$(date +%Y%m%d%H%M%S)
+  retry: 0
+  extra: {}
